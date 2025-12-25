@@ -1,0 +1,37 @@
+services:
+  laravel-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel-app
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - laravel-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: laravel-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dockertest
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: 
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./dockertest.sql:/docker-entrypoint-initdb.d/dockertest.sql
+    networks:
+      - laravel-network
+
+volumes:
+  mysql-data:
+
+networks:
+  laravel-network:
